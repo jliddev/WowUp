@@ -1,12 +1,10 @@
+import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
 import * as _ from "lodash";
 import { join } from "path";
 import { Subject } from "rxjs";
-
-import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-
 import {
   ADDON_MIGRATION_VERSION_KEY,
   ADDON_PROVIDERS_KEY,
@@ -24,13 +22,15 @@ import {
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
+  ENABLED_AUTOMATIC_BACKUP,
+  ENABLED_BACKUP,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
   GET_ADDONS_SORT_ORDER,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
   IPC_GET_APP_VERSION,
-  PROTOCOL_REGISTERED_PREFERENCE_KEY,
+  LAST_BACKUP_DATE,
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
   MY_ADDONS_SORT_ORDER,
@@ -465,5 +465,38 @@ export class WowUpService {
         args: this._electronService.isWin ? (this.startMinimized ? ["--hidden"] : []) : [],
       });
     }
+  }
+
+  public get enabledBackup(): boolean {
+    const backup = this._preferenceStorageService.findByKey(ENABLED_BACKUP);
+    return backup === "true";
+  }
+
+  public setEnableBackup(value: boolean): void {
+    const key = ENABLED_BACKUP;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public get lastBackupDate(): number {
+    const date = this._preferenceStorageService.findByKey(LAST_BACKUP_DATE);
+    return Number(date);
+  }
+
+  public setLastBackupDate(value: number): void {
+    const key = LAST_BACKUP_DATE;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public get enabledAutomaticBackup(): boolean {
+    const auto = this._preferenceStorageService.findByKey(ENABLED_AUTOMATIC_BACKUP);
+    return auto === "true";
+  }
+
+  public setEnableAutomaticBackup(value: boolean): void {
+    const key = ENABLED_AUTOMATIC_BACKUP;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 }
