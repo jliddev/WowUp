@@ -131,3 +131,8 @@ export const WINDOW_MIN_HEIGHT = 500;
 export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
 export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";
+
+//BACKUP
+export const ENABLED_BACKUP = "enabled_backup";
+export const ENABLED_AUTOMATIC_BACKUP = "enabled_automatic_backup";
+export const LAST_BACKUP_DATE = "last_backup_date";
