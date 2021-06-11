@@ -32,6 +32,11 @@ interface LocaleListItem {
   label: string;
 }
 
+interface TabListItem {
+  val: string,
+  label: string;
+}
+
 @Component({
   selector: "app-options-app-section",
   templateUrl: "./options-app-section.component.html",
@@ -52,6 +57,8 @@ export class OptionsAppSectionComponent implements OnInit {
   public currentLanguage = "";
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
+  public currentDefaultDetailsTabSelection = "";
+  public currentDetailsTabSelection = "";
   public languages: LocaleListItem[] = [
     { localeId: "en", label: "English" },
     { localeId: "cs", label: "Čestina" },
@@ -65,6 +72,12 @@ export class OptionsAppSectionComponent implements OnInit {
     { localeId: "ru", label: "русский" },
     { localeId: "zh", label: "简体中文" },
     { localeId: "zh-TW", label: "繁體中文" },
+  ];
+
+  public detailsTabSelections: TabListItem[] = [
+    { val: "last_used_tab", label: "Last used tab" },
+    { val: "description", label: "Description" },
+    { val: "changelog", label: "Changelog" }
   ];
 
   public themeGroups: ThemeGroup[] = [
@@ -121,6 +134,7 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
     this.useSymlinkMode = this.wowupService.useSymlinkMode;
+    this.currentDefaultDetailsTabSelection = this.sessionService.getDefaultSelectedDetailsTab();
 
     this.initScale().catch((e) => console.error(e));
 
@@ -308,6 +322,14 @@ export class OptionsAppSectionComponent implements OnInit {
     const newScale = evt.value;
     await this._zoomService.setZoomFactor(newScale);
     this.currentScale = newScale;
+  };
+
+  public onCurrentDefaultDetailsTabSelectionChange = (evt: MatSelectChange): void => {
+    this.sessionService.setDefaultSelectedDetailsTab(evt.value);
+    if (evt.value != "last_used_tab")
+    {
+      this.sessionService.setSelectedDetailsTab(evt.value);
+    }
   };
 
   private async updateScale() {
